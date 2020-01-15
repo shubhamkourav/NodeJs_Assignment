@@ -6,9 +6,12 @@ var auth = require('../JWT-Authentication');
 var config = require("../config")
 var bcrypt = require('bcrypt-nodejs');
 
+//for verify email
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-/* POST users creating. */
+/* POST create users.
+fields:- email,first_name,last_name,password
+*/
 router.post('/create', async (req, res, next) => {
   try {
 
@@ -45,6 +48,9 @@ router.post('/create', async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 });
+/**
+ * Login user with email and password
+ */
 router.post('/login', async (req, res) => {
   try {
     if (req.body && !req.body.email || !emailRegexp.test(req.body.email)) {
@@ -66,6 +72,9 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 })
+/**
+ * Get all or one user
+ */
 router.get(['/', '/:id'], auth, async (req, res) => {
   try {
     if (req.params.id) {
@@ -86,6 +95,9 @@ router.get(['/', '/:id'], auth, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 })
+/**
+ * Update user
+ */
 router.put('/:id', auth, async (req, res) => {
   try {
     if (req.params.id || req.params.email) {
@@ -102,6 +114,9 @@ router.put('/:id', auth, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 })
+/**
+ * Delete user
+ */
 router.delete('/:id', auth, async (req, res) => {
   try {
     if (req.params.id) {
@@ -121,6 +136,9 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 })
+/**
+ * genrate token for fogot password
+ */
 router.get('forgot/:email', async (req, res) => {
   try {
     if (req.params.email) {
@@ -142,6 +160,9 @@ router.get('forgot/:email', async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error.." })
   }
 })
+/**
+ * Reset password
+ */
 router.post('reset/', async (req, res) => {
   try {
     if (req.body && req.body.email && req.body.password) {
@@ -155,7 +176,6 @@ router.post('reset/', async (req, res) => {
     }
     else {
       res.status(422).json({ success: false, message: "Invalid Request" })
-
     }
   } catch (error) {
     console.log(error);
